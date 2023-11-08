@@ -1,0 +1,6 @@
+{
+	"name": "integrationRuntimecovid",
+	"properties": {
+		"type": "SelfHosted"
+	}
+}

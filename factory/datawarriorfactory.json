@@ -1,0 +1,9 @@
+{
+	"name": "datawarriorfactory",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "70cfc33c-b254-4ce9-a65f-f9ff1560e8a1",
+		"tenantId": "d57d32cc-c121-488f-b07b-dfe705680c71"
+	}
+}
