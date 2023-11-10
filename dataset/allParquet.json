@@ -1,0 +1,19 @@
+{
+	"name": "allParquet",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureDataLakeStorage2_dwchallenge1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileSystem": "all"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	}
+}
