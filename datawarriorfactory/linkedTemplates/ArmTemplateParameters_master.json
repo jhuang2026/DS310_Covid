@@ -1,0 +1,45 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "datawarriorfactory"
+		},
+		"AzureDataLakeStorage1_accountKey": {
+			"value": ""
+		},
+		"AzureDataLakeStorage2_dwchallenge1_accountKey": {
+			"value": ""
+		},
+		"COVID SQL Database_connectionString": {
+			"value": ""
+		},
+		"COVID SQL_connectionString": {
+			"value": ""
+		},
+		"CovidCosmos_connectionString": {
+			"value": ""
+		},
+		"SqlServer1_connectionString": {
+			"value": ""
+		},
+		"SqlServer2_connectionString": {
+			"value": ""
+		},
+		"SqlServer3_connectionString": {
+			"value": ""
+		},
+		"AzureDataLakeStorage1_properties_typeProperties_url": {
+			"value": "https://dwchallenge1.dfs.core.windows.net/"
+		},
+		"AzureDataLakeStorage2_dwchallenge1_properties_typeProperties_url": {
+			"value": "https://dwchallenge1.dfs.core.windows.net/"
+		},
+		"containerUri": {
+			"value": ""
+		},
+		"containerSasToken": {
+			"value": ""
+		}
+	}
+}

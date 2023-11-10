@@ -1,0 +1,132 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "datawarriorfactory"
+		},
+		"AzureDataLakeStorage1_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'AzureDataLakeStorage1'"
+		},
+		"AzureDataLakeStorage2_dwchallenge1_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'AzureDataLakeStorage2_dwchallenge1'"
+		},
+		"COVID SQL Database_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'COVID SQL Database'"
+		},
+		"COVID SQL_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'COVID SQL'"
+		},
+		"CovidCosmos_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'CovidCosmos'"
+		},
+		"SqlServer1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'SqlServer1'"
+		},
+		"SqlServer2_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'SqlServer2'"
+		},
+		"SqlServer3_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'SqlServer3'"
+		},
+		"AzureDataLakeStorage1_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://dwchallenge1.dfs.core.windows.net/"
+		},
+		"AzureDataLakeStorage2_dwchallenge1_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://dwchallenge1.dfs.core.windows.net/"
+		},
+		"containerUri": {
+			"type": "string",
+			"metadata": "URI to storage account containing linked ARM templates"
+		},
+		"containerSasToken": {
+			"type": "string",
+			"metadata": "Sas token to storage account containing linked ARM templates"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "datawarriorfactory_ArmTemplate_0",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_0.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"AzureDataLakeStorage1_accountKey": {
+						"value": "[parameters('AzureDataLakeStorage1_accountKey')]"
+					},
+					"AzureDataLakeStorage2_dwchallenge1_accountKey": {
+						"value": "[parameters('AzureDataLakeStorage2_dwchallenge1_accountKey')]"
+					},
+					"COVID SQL Database_connectionString": {
+						"value": "[parameters('COVID SQL Database_connectionString')]"
+					},
+					"COVID SQL_connectionString": {
+						"value": "[parameters('COVID SQL_connectionString')]"
+					},
+					"CovidCosmos_connectionString": {
+						"value": "[parameters('CovidCosmos_connectionString')]"
+					},
+					"SqlServer1_connectionString": {
+						"value": "[parameters('SqlServer1_connectionString')]"
+					},
+					"SqlServer2_connectionString": {
+						"value": "[parameters('SqlServer2_connectionString')]"
+					},
+					"SqlServer3_connectionString": {
+						"value": "[parameters('SqlServer3_connectionString')]"
+					},
+					"AzureDataLakeStorage1_properties_typeProperties_url": {
+						"value": "[parameters('AzureDataLakeStorage1_properties_typeProperties_url')]"
+					},
+					"AzureDataLakeStorage2_dwchallenge1_properties_typeProperties_url": {
+						"value": "[parameters('AzureDataLakeStorage2_dwchallenge1_properties_typeProperties_url')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "datawarriorfactory_ArmTemplate_1",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_1.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'datawarriorfactory_ArmTemplate_0')]"
+			]
+		}
+	]
+}
