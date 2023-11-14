@@ -1698,14 +1698,13 @@
 						"userProperties": [],
 						"typeProperties": {
 							"dataflow": {
-								"referenceName": "all_sources_dataflow",
+								"referenceName": "Metrics_dataflow",
 								"type": "DataFlowReference",
 								"parameters": {},
 								"datasetParameters": {
-									"AzSQLCountries": {},
-									"AzSQLMetrics": {},
-									"AzSQLDates": {},
-									"allSink": {}
+									"VMmetrics": {},
+									"AZmetrics": {},
+									"MetricsSink": {}
 								}
 							},
 							"staging": {},
@@ -1723,7 +1722,7 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/all_sources_dataflow')]"
+				"[concat(variables('factoryId'), '/dataflows/Metrics_dataflow')]"
 			]
 		},
 		{
