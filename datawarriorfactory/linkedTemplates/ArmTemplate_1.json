@@ -1685,7 +1685,7 @@
 			"properties": {
 				"activities": [
 					{
-						"name": "Data flow1",
+						"name": "Metrics Flow",
 						"type": "ExecuteDataFlow",
 						"dependsOn": [],
 						"policy": {
