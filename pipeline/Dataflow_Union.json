@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "all_sources_dataflow",
+						"referenceName": "Metrics_dataflow",
 						"type": "DataFlowReference"
 					},
 					"compute": {
