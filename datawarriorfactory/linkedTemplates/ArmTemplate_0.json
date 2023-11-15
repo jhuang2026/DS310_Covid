@@ -265,7 +265,6 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobFSLocation",
-						"folderPath": "cases",
 						"fileSystem": "all"
 					},
 					"compressionCodec": "snappy"
@@ -461,7 +460,6 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobFSLocation",
-						"folderPath": "deaths",
 						"fileSystem": "all"
 					},
 					"compressionCodec": "snappy"
@@ -641,7 +639,6 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobFSLocation",
-						"folderPath": "recoveries",
 						"fileSystem": "all"
 					},
 					"compressionCodec": "snappy"

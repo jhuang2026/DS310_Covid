@@ -1698,7 +1698,6 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobFSLocation",
-						"folderPath": "cases",
 						"fileSystem": "all"
 					},
 					"compressionCodec": "snappy"
@@ -1894,7 +1893,6 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobFSLocation",
-						"folderPath": "deaths",
 						"fileSystem": "all"
 					},
 					"compressionCodec": "snappy"
@@ -2074,7 +2072,6 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobFSLocation",
-						"folderPath": "recoveries",
 						"fileSystem": "all"
 					},
 					"compressionCodec": "snappy"
@@ -2822,27 +2819,36 @@
 						"CasesSelect sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     format: 'parquet',",
+						"     partitionFileNames:['cases'],",
+						"     truncate: true,",
 						"     umask: 0022,",
 						"     preCommands: [],",
 						"     postCommands: [],",
 						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> CasesSink",
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('hash', 1)) ~> CasesSink",
 						"RecovSelect sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     format: 'parquet',",
+						"     partitionFileNames:['recoveries'],",
+						"     truncate: true,",
 						"     umask: 0022,",
 						"     preCommands: [],",
 						"     postCommands: [],",
 						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> RecovSink",
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('hash', 1)) ~> RecovSink",
 						"DeathsSelect sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     format: 'parquet',",
+						"     partitionFileNames:['deaths'],",
+						"     truncate: true,",
 						"     umask: 0022,",
 						"     preCommands: [],",
 						"     postCommands: [],",
 						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> DeathsSink"
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('hash', 1)) ~> DeathsSink"
 					]
 				}
 			},
