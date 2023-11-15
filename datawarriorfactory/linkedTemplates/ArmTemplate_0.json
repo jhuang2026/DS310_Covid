@@ -850,6 +850,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobFSLocation",
+						"fileName": "part-00000-01370a4b-9e3f-4bb3-a09b-acf976610cd2-c000.snappy.parquet",
 						"fileSystem": "all"
 					},
 					"compressionCodec": "snappy"
