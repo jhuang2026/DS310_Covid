@@ -6,12 +6,75 @@
 			"type": "string",
 			"metadata": "Data Factory name",
 			"defaultValue": "datawarriorfactory"
+		},
+		"SqlServer1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'SqlServer1'"
+		},
+		"SqlServer2_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'SqlServer2'"
+		},
+		"SqlServer3_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'SqlServer3'"
 		}
 	},
 	"variables": {
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/SqlServer1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "SqlServer",
+				"typeProperties": {
+					"connectionString": "[parameters('SqlServer1_connectionString')]"
+				},
+				"connectVia": {
+					"referenceName": "integrationRuntimecovid",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SqlServer2')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "SqlServer",
+				"typeProperties": {
+					"connectionString": "[parameters('SqlServer2_connectionString')]"
+				},
+				"connectVia": {
+					"referenceName": "integrationRuntimecovid",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SqlServer3')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "SqlServer",
+				"typeProperties": {
+					"connectionString": "[parameters('SqlServer3_connectionString')]"
+				},
+				"connectVia": {
+					"referenceName": "integrationRuntimecovid",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": []
+		},
 		{
 			"name": "[concat(parameters('factoryName'), '/COVID COSMOSDB')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
@@ -1236,7 +1299,9 @@
 					"table": "Dates"
 				}
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/SqlServer1')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/SqlServerTable2')]",
@@ -1325,7 +1390,9 @@
 					"table": "Covid19_Metrics"
 				}
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/SqlServer2')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/SqlServerTable3')]",
@@ -1365,7 +1432,9 @@
 					"table": "Country"
 				}
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/SqlServer3')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/Metrics_dataflow')]",
@@ -1394,10 +1463,24 @@
 					"sinks": [
 						{
 							"dataset": {
-								"referenceName": "allParquet",
+								"referenceName": "CasesSinkODS",
 								"type": "DatasetReference"
 							},
-							"name": "MetricsSink"
+							"name": "CasesSink"
+						},
+						{
+							"dataset": {
+								"referenceName": "RecovSinkODS",
+								"type": "DatasetReference"
+							},
+							"name": "RecovSink"
+						},
+						{
+							"dataset": {
+								"referenceName": "DeathsSinkODS",
+								"type": "DatasetReference"
+							},
+							"name": "DeathsSink"
 						}
 					],
 					"transformations": [
@@ -1406,7 +1489,13 @@
 							"description": "Combining rows from transformation 'AZmetrics' and 'VMmetrics'"
 						},
 						{
-							"name": "MetricSelect"
+							"name": "CasesSelect"
+						},
+						{
+							"name": "DeathsSelect"
+						},
+						{
+							"name": "RecovSelect"
 						}
 					],
 					"scriptLines": [
@@ -1453,23 +1542,67 @@
 						"AZmetrics, VMmetrics union(byName: true)~> UnionMetrics",
 						"UnionMetrics select(mapColumn(",
 						"          ID,",
+						"          Updated,",
 						"          Confirmed,",
-						"          Deaths,",
-						"          Recovered,",
+						"          Confirmed_Change,",
 						"          Latitude,",
 						"          Longitude,",
+						"          ISO2,",
+						"          ISO3,",
 						"          Country_Region",
 						"     ),",
 						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> MetricSelect",
-						"MetricSelect sink(allowSchemaDrift: true,",
+						"     skipDuplicateMapOutputs: true) ~> CasesSelect",
+						"UnionMetrics select(mapColumn(",
+						"          ID,",
+						"          Updated,",
+						"          Deaths,",
+						"          Deaths_Change,",
+						"          Latitude,",
+						"          Longitude,",
+						"          ISO2,",
+						"          ISO3,",
+						"          Country_Region",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> DeathsSelect",
+						"UnionMetrics select(mapColumn(",
+						"          ID,",
+						"          Updated,",
+						"          Recovered,",
+						"          Recovered_Change,",
+						"          Latitude,",
+						"          Longitude,",
+						"          ISO2,",
+						"          ISO3,",
+						"          Country_Region",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> RecovSelect",
+						"CasesSelect sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     format: 'parquet',",
 						"     umask: 0022,",
 						"     preCommands: [],",
 						"     postCommands: [],",
 						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> MetricsSink"
+						"     skipDuplicateMapOutputs: true) ~> CasesSink",
+						"RecovSelect sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'parquet',",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> RecovSink",
+						"DeathsSelect sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'parquet',",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> DeathsSink"
 					]
 				}
 			},
@@ -1697,7 +1830,9 @@
 								"datasetParameters": {
 									"VMmetrics": {},
 									"AZmetrics": {},
-									"MetricsSink": {}
+									"CasesSink": {},
+									"RecovSink": {},
+									"DeathsSink": {}
 								}
 							},
 							"staging": {},

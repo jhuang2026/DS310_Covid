@@ -1293,7 +1293,9 @@
 								"datasetParameters": {
 									"VMmetrics": {},
 									"AZmetrics": {},
-									"MetricsSink": {}
+									"CasesSink": {},
+									"RecovSink": {},
+									"DeathsSink": {}
 								}
 							},
 							"staging": {},
@@ -1683,6 +1685,31 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/CasesSinkODS')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage2_dwchallenge1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "cases",
+						"fileSystem": "all"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage2_dwchallenge1')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/CosmosDbNoSqlCovid')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -1854,6 +1881,31 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/DeathsSinkODS')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage2_dwchallenge1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "deaths",
+						"fileSystem": "all"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage2_dwchallenge1')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/Parquet1')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -2003,6 +2055,31 @@
 						"type": "INT96"
 					}
 				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage2_dwchallenge1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/RecovSinkODS')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage2_dwchallenge1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "recoveries",
+						"fileSystem": "all"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage2_dwchallenge1')]"
@@ -2626,10 +2703,24 @@
 					"sinks": [
 						{
 							"dataset": {
-								"referenceName": "allParquet",
+								"referenceName": "CasesSinkODS",
 								"type": "DatasetReference"
 							},
-							"name": "MetricsSink"
+							"name": "CasesSink"
+						},
+						{
+							"dataset": {
+								"referenceName": "RecovSinkODS",
+								"type": "DatasetReference"
+							},
+							"name": "RecovSink"
+						},
+						{
+							"dataset": {
+								"referenceName": "DeathsSinkODS",
+								"type": "DatasetReference"
+							},
+							"name": "DeathsSink"
 						}
 					],
 					"transformations": [
@@ -2638,7 +2729,13 @@
 							"description": "Combining rows from transformation 'AZmetrics' and 'VMmetrics'"
 						},
 						{
-							"name": "MetricSelect"
+							"name": "CasesSelect"
+						},
+						{
+							"name": "DeathsSelect"
+						},
+						{
+							"name": "RecovSelect"
 						}
 					],
 					"scriptLines": [
@@ -2685,30 +2782,76 @@
 						"AZmetrics, VMmetrics union(byName: true)~> UnionMetrics",
 						"UnionMetrics select(mapColumn(",
 						"          ID,",
+						"          Updated,",
 						"          Confirmed,",
-						"          Deaths,",
-						"          Recovered,",
+						"          Confirmed_Change,",
 						"          Latitude,",
 						"          Longitude,",
+						"          ISO2,",
+						"          ISO3,",
 						"          Country_Region",
 						"     ),",
 						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> MetricSelect",
-						"MetricSelect sink(allowSchemaDrift: true,",
+						"     skipDuplicateMapOutputs: true) ~> CasesSelect",
+						"UnionMetrics select(mapColumn(",
+						"          ID,",
+						"          Updated,",
+						"          Deaths,",
+						"          Deaths_Change,",
+						"          Latitude,",
+						"          Longitude,",
+						"          ISO2,",
+						"          ISO3,",
+						"          Country_Region",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> DeathsSelect",
+						"UnionMetrics select(mapColumn(",
+						"          ID,",
+						"          Updated,",
+						"          Recovered,",
+						"          Recovered_Change,",
+						"          Latitude,",
+						"          Longitude,",
+						"          ISO2,",
+						"          ISO3,",
+						"          Country_Region",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> RecovSelect",
+						"CasesSelect sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     format: 'parquet',",
 						"     umask: 0022,",
 						"     preCommands: [],",
 						"     postCommands: [],",
 						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> MetricsSink"
+						"     skipDuplicateMapOutputs: true) ~> CasesSink",
+						"RecovSelect sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'parquet',",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> RecovSink",
+						"DeathsSelect sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'parquet',",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> DeathsSink"
 					]
 				}
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/Parquet3')]",
 				"[concat(variables('factoryId'), '/datasets/COVID_Country_Combined')]",
-				"[concat(variables('factoryId'), '/datasets/allParquet')]"
+				"[concat(variables('factoryId'), '/datasets/CasesSinkODS')]",
+				"[concat(variables('factoryId'), '/datasets/RecovSinkODS')]",
+				"[concat(variables('factoryId'), '/datasets/DeathsSinkODS')]"
 			]
 		},
 		{
