@@ -10,6 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
+				"fileName": "deaths",
 				"fileSystem": "all"
 			},
 			"compressionCodec": "snappy"

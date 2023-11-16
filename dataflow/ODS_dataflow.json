@@ -1,5 +1,5 @@
 {
-	"name": "Metrics_dataflow",
+	"name": "ODS_dataflow",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
@@ -18,6 +18,41 @@
 						"type": "DatasetReference"
 					},
 					"name": "AZmetrics"
+				},
+				{
+					"dataset": {
+						"referenceName": "VM_countries_data",
+						"type": "DatasetReference"
+					},
+					"name": "VMcountries"
+				},
+				{
+					"dataset": {
+						"referenceName": "az_countries_data",
+						"type": "DatasetReference"
+					},
+					"name": "AZcountries"
+				},
+				{
+					"dataset": {
+						"referenceName": "vm_dates_data",
+						"type": "DatasetReference"
+					},
+					"name": "VMdates"
+				},
+				{
+					"dataset": {
+						"referenceName": "az_dates_data",
+						"type": "DatasetReference"
+					},
+					"name": "AZdates"
+				},
+				{
+					"dataset": {
+						"referenceName": "cosmos_policy_parquet",
+						"type": "DatasetReference"
+					},
+					"name": "CDBpolicy"
 				}
 			],
 			"sinks": [
@@ -41,6 +76,27 @@
 						"type": "DatasetReference"
 					},
 					"name": "DeathsSink"
+				},
+				{
+					"dataset": {
+						"referenceName": "GeoSinkODS",
+						"type": "DatasetReference"
+					},
+					"name": "GeoSink"
+				},
+				{
+					"dataset": {
+						"referenceName": "DatesODS",
+						"type": "DatasetReference"
+					},
+					"name": "DatesSink"
+				},
+				{
+					"dataset": {
+						"referenceName": "PolicyODS",
+						"type": "DatasetReference"
+					},
+					"name": "PolicySink"
 				}
 			],
 			"transformations": [
@@ -56,6 +112,21 @@
 				},
 				{
 					"name": "RecovSelect"
+				},
+				{
+					"name": "UnionGeo"
+				},
+				{
+					"name": "GeoSelect"
+				},
+				{
+					"name": "UnionDates"
+				},
+				{
+					"name": "DatesSelect"
+				},
+				{
+					"name": "PolicySelect"
 				}
 			],
 			"scriptLines": [
@@ -99,6 +170,83 @@
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
 				"     format: 'parquet') ~> AZmetrics",
+				"source(output(",
+				"          Country as string,",
+				"          CountryCode as string,",
+				"          Latitude as decimal(10,5),",
+				"          Longitude as decimal(10,5)",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'parquet') ~> VMcountries",
+				"source(output(",
+				"          Country as string,",
+				"          CountryCode as string,",
+				"          Latitude as decimal(10,5),",
+				"          Longitude as decimal(10,5)",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'parquet') ~> AZcountries",
+				"source(output(",
+				"          DateKey as integer,",
+				"          FullDate as date,",
+				"          isWeekDay as boolean,",
+				"          DayOfWeek as integer,",
+				"          DayOfMonth as integer,",
+				"          DayOfQuarter as integer,",
+				"          DayOfYear as integer,",
+				"          DayName as string,",
+				"          WeekOfYear as integer,",
+				"          WeekName as string,",
+				"          MonthOfYear as integer,",
+				"          MonthName as string,",
+				"          CalendarQuarter as integer,",
+				"          CalendarQuarterName as string,",
+				"          CalendarYear as integer,",
+				"          FiscalMonth as integer,",
+				"          FiscalMonthName as string,",
+				"          FiscalQuarter as integer,",
+				"          FiscalQuarterName as string,",
+				"          FiscalYear as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'parquet') ~> VMdates",
+				"source(output(",
+				"          DateKey as integer,",
+				"          FullDate as date,",
+				"          isWeekDay as boolean,",
+				"          DayOfWeek as integer,",
+				"          DayOfMonth as integer,",
+				"          DayOfQuarter as integer,",
+				"          DayOfYear as integer,",
+				"          DayName as string,",
+				"          WeekOfYear as integer,",
+				"          WeekName as string,",
+				"          MonthOfYear as integer,",
+				"          MonthName as string,",
+				"          CalendarQuarter as integer,",
+				"          CalendarQuarterName as string,",
+				"          CalendarYear as integer,",
+				"          FiscalMonth as integer,",
+				"          FiscalMonthName as string,",
+				"          FiscalQuarter as integer,",
+				"          FiscalQuarterName as string,",
+				"          FiscalYear as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'parquet') ~> AZdates",
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     inferDriftedColumnTypes: true,",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'parquet') ~> CDBpolicy",
 				"AZmetrics, VMmetrics union(byName: true)~> UnionMetrics",
 				"UnionMetrics select(mapColumn(",
 				"          ID,",
@@ -139,6 +287,42 @@
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> RecovSelect",
+				"VMcountries, AZcountries union(byName: true)~> UnionGeo",
+				"UnionGeo select(mapColumn(",
+				"          Country,",
+				"          CountryCode,",
+				"          Latitude,",
+				"          Longitude",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> GeoSelect",
+				"VMdates, AZdates union(byName: true)~> UnionDates",
+				"UnionDates select(mapColumn(",
+				"          DateKey,",
+				"          FullDate,",
+				"          isWeekDay,",
+				"          DayOfWeek,",
+				"          DayOfMonth,",
+				"          DayOfQuarter,",
+				"          DayOfYear,",
+				"          DayName,",
+				"          WeekOfYear,",
+				"          WeekName,",
+				"          MonthOfYear,",
+				"          MonthName,",
+				"          CalendarQuarter,",
+				"          CalendarQuarterName,",
+				"          CalendarYear,",
+				"          FiscalMonth,",
+				"          FiscalMonthName,",
+				"          FiscalQuarter,",
+				"          FiscalQuarterName,",
+				"          FiscalYear",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> DatesSelect",
+				"CDBpolicy select(skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> PolicySelect",
 				"CasesSelect sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     format: 'parquet',",
@@ -168,7 +352,35 @@
 				"     postCommands: [],",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     partitionBy('hash', 1)) ~> DeathsSink"
+				"     partitionBy('hash', 1)) ~> DeathsSink",
+				"GeoSelect sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'parquet',",
+				"     partitionFileNames:['geography'],",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> GeoSink",
+				"DatesSelect sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'parquet',",
+				"     partitionFileNames:['dates'],",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> DatesSink",
+				"PolicySelect sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'parquet',",
+				"     partitionFileNames:['policy'],",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> PolicySink"
 			]
 		}
 	}

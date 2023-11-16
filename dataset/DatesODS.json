@@ -1,5 +1,5 @@
 {
-	"name": "RecovSinkODS",
+	"name": "DatesODS",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "AzureDataLakeStorage2_dwchallenge1",
@@ -10,7 +10,6 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileName": "recoveries",
 				"fileSystem": "all"
 			},
 			"compressionCodec": "snappy"
