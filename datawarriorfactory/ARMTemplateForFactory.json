@@ -1287,15 +1287,23 @@
 						"userProperties": [],
 						"typeProperties": {
 							"dataflow": {
-								"referenceName": "Metrics_dataflow",
+								"referenceName": "ODS_dataflow",
 								"type": "DataFlowReference",
 								"parameters": {},
 								"datasetParameters": {
 									"VMmetrics": {},
 									"AZmetrics": {},
+									"VMcountries": {},
+									"AZcountries": {},
+									"VMdates": {},
+									"AZdates": {},
+									"CDBpolicy": {},
 									"CasesSink": {},
 									"RecovSink": {},
-									"DeathsSink": {}
+									"DeathsSink": {},
+									"GeoSink": {},
+									"DatesSink": {},
+									"PolicySink": {}
 								}
 							},
 							"staging": {},
@@ -1313,55 +1321,7 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/Metrics_dataflow')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/pipeline1')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Data flow1",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "all_sources_dataflow",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"AzSQLCountries": {},
-									"AzSQLMetrics": {},
-									"AzSQLDates": {},
-									"allSink": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/all_sources_dataflow')]"
+				"[concat(variables('factoryId'), '/dataflows/ODS_dataflow')]"
 			]
 		},
 		{
@@ -1698,6 +1658,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobFSLocation",
+						"fileName": "cases",
 						"fileSystem": "all"
 					},
 					"compressionCodec": "snappy"
@@ -1880,7 +1841,56 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/DatesODS')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage2_dwchallenge1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileSystem": "all"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage2_dwchallenge1')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/DeathsSinkODS')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage2_dwchallenge1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "deaths",
+						"fileSystem": "all"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage2_dwchallenge1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/GeoSinkODS')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -2059,6 +2069,30 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/PolicyODS')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage2_dwchallenge1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileSystem": "all"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage2_dwchallenge1')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/RecovSinkODS')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -2072,6 +2106,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobFSLocation",
+						"fileName": "recoveries",
 						"fileSystem": "all"
 					},
 					"compressionCodec": "snappy"
@@ -2484,6 +2519,52 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/VM_countries_data')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage2_dwchallenge1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "dbo.Country.parquet",
+						"fileSystem": "vmcountries"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": [
+					{
+						"name": "Country",
+						"type": "UTF8"
+					},
+					{
+						"name": "CountryCode",
+						"type": "UTF8"
+					},
+					{
+						"name": "Latitude",
+						"type": "DECIMAL",
+						"precision": 10,
+						"scale": 5
+					},
+					{
+						"name": "Longitude",
+						"type": "DECIMAL",
+						"precision": 10,
+						"scale": 5
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage2_dwchallenge1')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/allParquet')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -2509,6 +2590,158 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/az_countries_data')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage2_dwchallenge1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "dbo.Country.parquet",
+						"fileSystem": "sqlcountries"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": [
+					{
+						"name": "Country",
+						"type": "UTF8"
+					},
+					{
+						"name": "CountryCode",
+						"type": "UTF8"
+					},
+					{
+						"name": "Latitude",
+						"type": "DECIMAL",
+						"precision": 10,
+						"scale": 5
+					},
+					{
+						"name": "Longitude",
+						"type": "DECIMAL",
+						"precision": 10,
+						"scale": 5
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage2_dwchallenge1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/az_dates_data')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage2_dwchallenge1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "dbo.Dates.parquet",
+						"fileSystem": "sqlcountries"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": [
+					{
+						"name": "DateKey",
+						"type": "INT32"
+					},
+					{
+						"name": "FullDate",
+						"type": "DATE"
+					},
+					{
+						"name": "isWeekDay",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "DayOfWeek",
+						"type": "INT32"
+					},
+					{
+						"name": "DayOfMonth",
+						"type": "INT32"
+					},
+					{
+						"name": "DayOfQuarter",
+						"type": "INT32"
+					},
+					{
+						"name": "DayOfYear",
+						"type": "INT32"
+					},
+					{
+						"name": "DayName",
+						"type": "UTF8"
+					},
+					{
+						"name": "WeekOfYear",
+						"type": "INT32"
+					},
+					{
+						"name": "WeekName",
+						"type": "UTF8"
+					},
+					{
+						"name": "MonthOfYear",
+						"type": "INT32"
+					},
+					{
+						"name": "MonthName",
+						"type": "UTF8"
+					},
+					{
+						"name": "CalendarQuarter",
+						"type": "INT32"
+					},
+					{
+						"name": "CalendarQuarterName",
+						"type": "UTF8"
+					},
+					{
+						"name": "CalendarYear",
+						"type": "INT32"
+					},
+					{
+						"name": "FiscalMonth",
+						"type": "INT32"
+					},
+					{
+						"name": "FiscalMonthName",
+						"type": "UTF8"
+					},
+					{
+						"name": "FiscalQuarter",
+						"type": "INT32"
+					},
+					{
+						"name": "FiscalQuarterName",
+						"type": "UTF8"
+					},
+					{
+						"name": "FiscalYear",
+						"type": "INT32"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage2_dwchallenge1')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/cosmos_policy_parquet')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -2528,6 +2761,112 @@
 					"compressionCodec": "none"
 				},
 				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage2_dwchallenge1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/vm_dates_data')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage2_dwchallenge1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "dbo.Dates.parquet",
+						"fileSystem": "vmcountries"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": [
+					{
+						"name": "DateKey",
+						"type": "INT32"
+					},
+					{
+						"name": "FullDate",
+						"type": "DATE"
+					},
+					{
+						"name": "isWeekDay",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "DayOfWeek",
+						"type": "INT32"
+					},
+					{
+						"name": "DayOfMonth",
+						"type": "INT32"
+					},
+					{
+						"name": "DayOfQuarter",
+						"type": "INT32"
+					},
+					{
+						"name": "DayOfYear",
+						"type": "INT32"
+					},
+					{
+						"name": "DayName",
+						"type": "UTF8"
+					},
+					{
+						"name": "WeekOfYear",
+						"type": "INT32"
+					},
+					{
+						"name": "WeekName",
+						"type": "UTF8"
+					},
+					{
+						"name": "MonthOfYear",
+						"type": "INT32"
+					},
+					{
+						"name": "MonthName",
+						"type": "UTF8"
+					},
+					{
+						"name": "CalendarQuarter",
+						"type": "INT32"
+					},
+					{
+						"name": "CalendarQuarterName",
+						"type": "UTF8"
+					},
+					{
+						"name": "CalendarYear",
+						"type": "INT32"
+					},
+					{
+						"name": "FiscalMonth",
+						"type": "INT32"
+					},
+					{
+						"name": "FiscalMonthName",
+						"type": "UTF8"
+					},
+					{
+						"name": "FiscalQuarter",
+						"type": "INT32"
+					},
+					{
+						"name": "FiscalQuarterName",
+						"type": "UTF8"
+					},
+					{
+						"name": "FiscalYear",
+						"type": "INT32"
+					}
+				]
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage2_dwchallenge1')]"
@@ -2674,7 +3013,7 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/Metrics_dataflow')]",
+			"name": "[concat(parameters('factoryName'), '/ODS_dataflow')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -2695,6 +3034,41 @@
 								"type": "DatasetReference"
 							},
 							"name": "AZmetrics"
+						},
+						{
+							"dataset": {
+								"referenceName": "VM_countries_data",
+								"type": "DatasetReference"
+							},
+							"name": "VMcountries"
+						},
+						{
+							"dataset": {
+								"referenceName": "az_countries_data",
+								"type": "DatasetReference"
+							},
+							"name": "AZcountries"
+						},
+						{
+							"dataset": {
+								"referenceName": "vm_dates_data",
+								"type": "DatasetReference"
+							},
+							"name": "VMdates"
+						},
+						{
+							"dataset": {
+								"referenceName": "az_dates_data",
+								"type": "DatasetReference"
+							},
+							"name": "AZdates"
+						},
+						{
+							"dataset": {
+								"referenceName": "cosmos_policy_parquet",
+								"type": "DatasetReference"
+							},
+							"name": "CDBpolicy"
 						}
 					],
 					"sinks": [
@@ -2718,6 +3092,27 @@
 								"type": "DatasetReference"
 							},
 							"name": "DeathsSink"
+						},
+						{
+							"dataset": {
+								"referenceName": "GeoSinkODS",
+								"type": "DatasetReference"
+							},
+							"name": "GeoSink"
+						},
+						{
+							"dataset": {
+								"referenceName": "DatesODS",
+								"type": "DatasetReference"
+							},
+							"name": "DatesSink"
+						},
+						{
+							"dataset": {
+								"referenceName": "PolicyODS",
+								"type": "DatasetReference"
+							},
+							"name": "PolicySink"
 						}
 					],
 					"transformations": [
@@ -2733,6 +3128,21 @@
 						},
 						{
 							"name": "RecovSelect"
+						},
+						{
+							"name": "UnionGeo"
+						},
+						{
+							"name": "GeoSelect"
+						},
+						{
+							"name": "UnionDates"
+						},
+						{
+							"name": "DatesSelect"
+						},
+						{
+							"name": "PolicySelect"
 						}
 					],
 					"scriptLines": [
@@ -2776,6 +3186,83 @@
 						"     validateSchema: false,",
 						"     ignoreNoFilesFound: false,",
 						"     format: 'parquet') ~> AZmetrics",
+						"source(output(",
+						"          Country as string,",
+						"          CountryCode as string,",
+						"          Latitude as decimal(10,5),",
+						"          Longitude as decimal(10,5)",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'parquet') ~> VMcountries",
+						"source(output(",
+						"          Country as string,",
+						"          CountryCode as string,",
+						"          Latitude as decimal(10,5),",
+						"          Longitude as decimal(10,5)",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'parquet') ~> AZcountries",
+						"source(output(",
+						"          DateKey as integer,",
+						"          FullDate as date,",
+						"          isWeekDay as boolean,",
+						"          DayOfWeek as integer,",
+						"          DayOfMonth as integer,",
+						"          DayOfQuarter as integer,",
+						"          DayOfYear as integer,",
+						"          DayName as string,",
+						"          WeekOfYear as integer,",
+						"          WeekName as string,",
+						"          MonthOfYear as integer,",
+						"          MonthName as string,",
+						"          CalendarQuarter as integer,",
+						"          CalendarQuarterName as string,",
+						"          CalendarYear as integer,",
+						"          FiscalMonth as integer,",
+						"          FiscalMonthName as string,",
+						"          FiscalQuarter as integer,",
+						"          FiscalQuarterName as string,",
+						"          FiscalYear as integer",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'parquet') ~> VMdates",
+						"source(output(",
+						"          DateKey as integer,",
+						"          FullDate as date,",
+						"          isWeekDay as boolean,",
+						"          DayOfWeek as integer,",
+						"          DayOfMonth as integer,",
+						"          DayOfQuarter as integer,",
+						"          DayOfYear as integer,",
+						"          DayName as string,",
+						"          WeekOfYear as integer,",
+						"          WeekName as string,",
+						"          MonthOfYear as integer,",
+						"          MonthName as string,",
+						"          CalendarQuarter as integer,",
+						"          CalendarQuarterName as string,",
+						"          CalendarYear as integer,",
+						"          FiscalMonth as integer,",
+						"          FiscalMonthName as string,",
+						"          FiscalQuarter as integer,",
+						"          FiscalQuarterName as string,",
+						"          FiscalYear as integer",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'parquet') ~> AZdates",
+						"source(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     inferDriftedColumnTypes: true,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'parquet') ~> CDBpolicy",
 						"AZmetrics, VMmetrics union(byName: true)~> UnionMetrics",
 						"UnionMetrics select(mapColumn(",
 						"          ID,",
@@ -2816,6 +3303,42 @@
 						"     ),",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true) ~> RecovSelect",
+						"VMcountries, AZcountries union(byName: true)~> UnionGeo",
+						"UnionGeo select(mapColumn(",
+						"          Country,",
+						"          CountryCode,",
+						"          Latitude,",
+						"          Longitude",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> GeoSelect",
+						"VMdates, AZdates union(byName: true)~> UnionDates",
+						"UnionDates select(mapColumn(",
+						"          DateKey,",
+						"          FullDate,",
+						"          isWeekDay,",
+						"          DayOfWeek,",
+						"          DayOfMonth,",
+						"          DayOfQuarter,",
+						"          DayOfYear,",
+						"          DayName,",
+						"          WeekOfYear,",
+						"          WeekName,",
+						"          MonthOfYear,",
+						"          MonthName,",
+						"          CalendarQuarter,",
+						"          CalendarQuarterName,",
+						"          CalendarYear,",
+						"          FiscalMonth,",
+						"          FiscalMonthName,",
+						"          FiscalQuarter,",
+						"          FiscalQuarterName,",
+						"          FiscalYear",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> DatesSelect",
+						"CDBpolicy select(skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> PolicySelect",
 						"CasesSelect sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     format: 'parquet',",
@@ -2845,217 +3368,52 @@
 						"     postCommands: [],",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true,",
-						"     partitionBy('hash', 1)) ~> DeathsSink"
+						"     partitionBy('hash', 1)) ~> DeathsSink",
+						"GeoSelect sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'parquet',",
+						"     partitionFileNames:['geography'],",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('hash', 1)) ~> GeoSink",
+						"DatesSelect sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'parquet',",
+						"     partitionFileNames:['dates'],",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> DatesSink",
+						"PolicySelect sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'parquet',",
+						"     partitionFileNames:['policy'],",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> PolicySink"
 					]
 				}
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/Parquet3')]",
 				"[concat(variables('factoryId'), '/datasets/COVID_Country_Combined')]",
+				"[concat(variables('factoryId'), '/datasets/VM_countries_data')]",
+				"[concat(variables('factoryId'), '/datasets/az_countries_data')]",
+				"[concat(variables('factoryId'), '/datasets/vm_dates_data')]",
+				"[concat(variables('factoryId'), '/datasets/az_dates_data')]",
+				"[concat(variables('factoryId'), '/datasets/cosmos_policy_parquet')]",
 				"[concat(variables('factoryId'), '/datasets/CasesSinkODS')]",
 				"[concat(variables('factoryId'), '/datasets/RecovSinkODS')]",
-				"[concat(variables('factoryId'), '/datasets/DeathsSinkODS')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/all_sources_dataflow')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "SQL_Countries_Source",
-								"type": "DatasetReference"
-							},
-							"name": "AzSQLCountries"
-						},
-						{
-							"dataset": {
-								"referenceName": "SQL_Metrics_Source",
-								"type": "DatasetReference"
-							},
-							"name": "AzSQLMetrics"
-						},
-						{
-							"dataset": {
-								"referenceName": "SQL_Dates_Source",
-								"type": "DatasetReference"
-							},
-							"name": "AzSQLDates"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "allParquet",
-								"type": "DatasetReference"
-							},
-							"name": "allSink"
-						}
-					],
-					"transformations": [
-						{
-							"name": "union1"
-						},
-						{
-							"name": "UnionSel"
-						}
-					],
-					"scriptLines": [
-						"source(output(",
-						"          Country as string,",
-						"          CountryCode as string,",
-						"          Latitude as decimal(10,5),",
-						"          Longitude as decimal(10,5)",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     isolationLevel: 'READ_UNCOMMITTED',",
-						"     format: 'table') ~> AzSQLCountries",
-						"source(output(",
-						"          ID as integer,",
-						"          Updated as date,",
-						"          Confirmed as integer,",
-						"          Confirmed_Change as integer,",
-						"          Deaths as integer,",
-						"          Deaths_Change as integer,",
-						"          Recovered as integer,",
-						"          Recovered_Change as integer,",
-						"          Latitude as decimal(10,5),",
-						"          Longitude as decimal(10,5),",
-						"          ISO2 as string,",
-						"          ISO3 as string,",
-						"          Country_Region as string,",
-						"          load_time as timestamp",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     isolationLevel: 'READ_UNCOMMITTED',",
-						"     format: 'table') ~> AzSQLMetrics",
-						"source(output(",
-						"          DateKey as integer,",
-						"          FullDate as date,",
-						"          isWeekDay as boolean,",
-						"          DayOfWeek as integer,",
-						"          DayOfMonth as integer,",
-						"          DayOfQuarter as integer,",
-						"          DayOfYear as integer,",
-						"          DayName as string,",
-						"          WeekOfYear as integer,",
-						"          WeekName as string,",
-						"          MonthOfYear as integer,",
-						"          MonthName as string,",
-						"          CalendarQuarter as integer,",
-						"          CalendarQuarterName as string,",
-						"          CalendarYear as integer,",
-						"          FiscalMonth as integer,",
-						"          FiscalMonthName as string,",
-						"          FiscalQuarter as integer,",
-						"          FiscalQuarterName as string,",
-						"          FiscalYear as integer",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     isolationLevel: 'READ_UNCOMMITTED',",
-						"     format: 'table') ~> AzSQLDates",
-						"AzSQLCountries, AzSQLMetrics, AzSQLDates union(byName: true)~> union1",
-						"union1 select(mapColumn(",
-						"          Country,",
-						"          CountryCode,",
-						"          Latitude,",
-						"          Longitude,",
-						"          ID,",
-						"          Updated,",
-						"          Confirmed,",
-						"          Confirmed_Change,",
-						"          Deaths,",
-						"          Deaths_Change,",
-						"          Recovered,",
-						"          Recovered_Change,",
-						"          ISO2,",
-						"          ISO3,",
-						"          Country_Region,",
-						"          load_time,",
-						"          DateKey,",
-						"          FullDate,",
-						"          isWeekDay,",
-						"          DayOfWeek,",
-						"          DayOfMonth,",
-						"          DayOfQuarter,",
-						"          DayOfYear,",
-						"          DayName,",
-						"          WeekOfYear,",
-						"          WeekName,",
-						"          MonthOfYear,",
-						"          MonthName,",
-						"          CalendarQuarter,",
-						"          CalendarQuarterName,",
-						"          CalendarYear,",
-						"          FiscalMonth,",
-						"          FiscalMonthName,",
-						"          FiscalQuarter,",
-						"          FiscalQuarterName,",
-						"          FiscalYear",
-						"     ),",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> UnionSel",
-						"UnionSel sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     format: 'parquet',",
-						"     umask: 0022,",
-						"     preCommands: [],",
-						"     postCommands: [],",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     mapColumn(",
-						"          Country,",
-						"          CountryCode,",
-						"          Latitude,",
-						"          Longitude,",
-						"          ID,",
-						"          Updated,",
-						"          Confirmed,",
-						"          Confirmed_Change,",
-						"          Deaths,",
-						"          Deaths_Change,",
-						"          Recovered,",
-						"          Recovered_Change,",
-						"          ISO2,",
-						"          ISO3,",
-						"          Country_Region,",
-						"          load_time,",
-						"          DateKey,",
-						"          FullDate,",
-						"          isWeekDay,",
-						"          DayOfWeek,",
-						"          DayOfMonth,",
-						"          DayOfQuarter,",
-						"          DayOfYear,",
-						"          DayName,",
-						"          WeekOfYear,",
-						"          WeekName,",
-						"          MonthOfYear,",
-						"          MonthName,",
-						"          CalendarQuarter,",
-						"          CalendarQuarterName,",
-						"          CalendarYear,",
-						"          FiscalMonth,",
-						"          FiscalMonthName,",
-						"          FiscalQuarter,",
-						"          FiscalQuarterName,",
-						"          FiscalYear",
-						"     )) ~> allSink"
-					]
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/SQL_Countries_Source')]",
-				"[concat(variables('factoryId'), '/datasets/SQL_Metrics_Source')]",
-				"[concat(variables('factoryId'), '/datasets/SQL_Dates_Source')]",
-				"[concat(variables('factoryId'), '/datasets/allParquet')]"
+				"[concat(variables('factoryId'), '/datasets/DeathsSinkODS')]",
+				"[concat(variables('factoryId'), '/datasets/GeoSinkODS')]",
+				"[concat(variables('factoryId'), '/datasets/DatesODS')]",
+				"[concat(variables('factoryId'), '/datasets/PolicyODS')]"
 			]
 		}
 	]
