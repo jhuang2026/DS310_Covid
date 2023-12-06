@@ -347,7 +347,316 @@
 					},
 					"compressionCodec": "none"
 				},
-				"schema": []
+				"schema": [
+					{
+						"name": "CountryName",
+						"type": "UTF8"
+					},
+					{
+						"name": "CountryCode",
+						"type": "UTF8"
+					},
+					{
+						"name": "RegionName",
+						"type": "UTF8"
+					},
+					{
+						"name": "RegionCode",
+						"type": "UTF8"
+					},
+					{
+						"name": "Jurisdiction",
+						"type": "UTF8"
+					},
+					{
+						"name": "Date",
+						"type": "INT96"
+					},
+					{
+						"name": "C1_School_closing",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 18
+					},
+					{
+						"name": "C1_Flag",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 18
+					},
+					{
+						"name": "C2_Workplace_closing",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 18
+					},
+					{
+						"name": "C2_Flag",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 18
+					},
+					{
+						"name": "C3_Cancel_public_events",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 18
+					},
+					{
+						"name": "C3_Flag",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 18
+					},
+					{
+						"name": "C4_Restrictions_on_gatherings",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 18
+					},
+					{
+						"name": "C4_Flag",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 18
+					},
+					{
+						"name": "C5_Close_public_transport",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 18
+					},
+					{
+						"name": "C5_Flag",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 18
+					},
+					{
+						"name": "C6_Stay_at_home_requirements",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 18
+					},
+					{
+						"name": "C6_Flag",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 18
+					},
+					{
+						"name": "C7_Restrictions_on_internal_movement",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 18
+					},
+					{
+						"name": "C7_Flag",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 18
+					},
+					{
+						"name": "C8_International_travel_controls",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 18
+					},
+					{
+						"name": "E1_Income_support",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 18
+					},
+					{
+						"name": "E1_Flag",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 18
+					},
+					{
+						"name": "E2_Debt_contract_relief",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 18
+					},
+					{
+						"name": "E3_Fiscal_measures",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 18
+					},
+					{
+						"name": "E4_International_support",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 18
+					},
+					{
+						"name": "H1_Public_information_campaigns",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 18
+					},
+					{
+						"name": "H1_Flag",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 18
+					},
+					{
+						"name": "H2_Testing_policy",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 18
+					},
+					{
+						"name": "H3_Contact_tracing",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 18
+					},
+					{
+						"name": "H4_Emergency_investment_in_healthcare",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 18
+					},
+					{
+						"name": "H5_Investment_in_vaccines",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 18
+					},
+					{
+						"name": "H6_Facial_Coverings",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 18
+					},
+					{
+						"name": "H6_Flag",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 18
+					},
+					{
+						"name": "H7_Vaccination_policy",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 18
+					},
+					{
+						"name": "H7_Flag",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 18
+					},
+					{
+						"name": "H8_Protection_of_elderly_people",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 18
+					},
+					{
+						"name": "H8_Flag",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 18
+					},
+					{
+						"name": "M1_Wildcard",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 18
+					},
+					{
+						"name": "StringencyIndex",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 18
+					},
+					{
+						"name": "StringencyIndexForDisplay",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 18
+					},
+					{
+						"name": "StringencyLegacyIndex",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 18
+					},
+					{
+						"name": "StringencyLegacyIndexForDisplay",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 18
+					},
+					{
+						"name": "GovernmentResponseIndex",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 18
+					},
+					{
+						"name": "GovernmentResponseIndexForDisplay",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 18
+					},
+					{
+						"name": "ContainmentHealthIndex",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 18
+					},
+					{
+						"name": "ContainmentHealthIndexForDisplay",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 18
+					},
+					{
+						"name": "EconomicSupportIndex",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 18
+					},
+					{
+						"name": "EconomicSupportIndexForDisplay",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 18
+					},
+					{
+						"name": "id",
+						"type": "UTF8"
+					},
+					{
+						"name": "_rid",
+						"type": "UTF8"
+					},
+					{
+						"name": "_self",
+						"type": "UTF8"
+					},
+					{
+						"name": "_etag",
+						"type": "UTF8"
+					},
+					{
+						"name": "_attachments",
+						"type": "UTF8"
+					},
+					{
+						"name": "_ts",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 18
+					}
+				]
 			},
 			"dependsOn": []
 		},
@@ -2117,7 +2426,64 @@
 						"     validateSchema: false,",
 						"     ignoreNoFilesFound: false,",
 						"     format: 'parquet') ~> AZdates",
-						"source(allowSchemaDrift: true,",
+						"source(output(",
+						"          CountryName as string,",
+						"          CountryCode as string,",
+						"          RegionName as string,",
+						"          RegionCode as string,",
+						"          Jurisdiction as string,",
+						"          Date as timestamp,",
+						"          C1_School_closing as decimal(38,18),",
+						"          C1_Flag as decimal(38,18),",
+						"          C2_Workplace_closing as decimal(38,18),",
+						"          C2_Flag as decimal(38,18),",
+						"          C3_Cancel_public_events as decimal(38,18),",
+						"          C3_Flag as decimal(38,18),",
+						"          C4_Restrictions_on_gatherings as decimal(38,18),",
+						"          C4_Flag as decimal(38,18),",
+						"          C5_Close_public_transport as decimal(38,18),",
+						"          C5_Flag as decimal(38,18),",
+						"          C6_Stay_at_home_requirements as decimal(38,18),",
+						"          C6_Flag as decimal(38,18),",
+						"          C7_Restrictions_on_internal_movement as decimal(38,18),",
+						"          C7_Flag as decimal(38,18),",
+						"          C8_International_travel_controls as decimal(38,18),",
+						"          E1_Income_support as decimal(38,18),",
+						"          E1_Flag as decimal(38,18),",
+						"          E2_Debt_contract_relief as decimal(38,18),",
+						"          E3_Fiscal_measures as decimal(38,18),",
+						"          E4_International_support as decimal(38,18),",
+						"          H1_Public_information_campaigns as decimal(38,18),",
+						"          H1_Flag as decimal(38,18),",
+						"          H2_Testing_policy as decimal(38,18),",
+						"          H3_Contact_tracing as decimal(38,18),",
+						"          H4_Emergency_investment_in_healthcare as decimal(38,18),",
+						"          H5_Investment_in_vaccines as decimal(38,18),",
+						"          H6_Facial_Coverings as decimal(38,18),",
+						"          H6_Flag as decimal(38,18),",
+						"          H7_Vaccination_policy as decimal(38,18),",
+						"          H7_Flag as decimal(38,18),",
+						"          H8_Protection_of_elderly_people as decimal(38,18),",
+						"          H8_Flag as decimal(38,18),",
+						"          M1_Wildcard as decimal(38,18),",
+						"          StringencyIndex as decimal(38,18),",
+						"          StringencyIndexForDisplay as decimal(38,18),",
+						"          StringencyLegacyIndex as decimal(38,18),",
+						"          StringencyLegacyIndexForDisplay as decimal(38,18),",
+						"          GovernmentResponseIndex as decimal(38,18),",
+						"          GovernmentResponseIndexForDisplay as decimal(38,18),",
+						"          ContainmentHealthIndex as decimal(38,18),",
+						"          ContainmentHealthIndexForDisplay as decimal(38,18),",
+						"          EconomicSupportIndex as decimal(38,18),",
+						"          EconomicSupportIndexForDisplay as decimal(38,18),",
+						"          id as string,",
+						"          {_rid} as string,",
+						"          {_self} as string,",
+						"          {_etag} as string,",
+						"          {_attachments} as string,",
+						"          {_ts} as decimal(38,18)",
+						"     ),",
+						"     allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     inferDriftedColumnTypes: true,",
 						"     ignoreNoFilesFound: false,",
