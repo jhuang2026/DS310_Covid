@@ -808,7 +808,8 @@
 				"type": "Parquet",
 				"typeProperties": {
 					"location": {
-						"type": "AzureBlobFSLocation"
+						"type": "AzureBlobFSLocation",
+						"fileSystem": "workspace"
 					},
 					"compressionCodec": "snappy"
 				},
