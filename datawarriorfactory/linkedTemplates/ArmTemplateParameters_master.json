@@ -29,11 +29,17 @@
 		"SqlServer3_connectionString": {
 			"value": ""
 		},
+		"covid_sa_accountKey": {
+			"value": ""
+		},
 		"AzureDataLakeStorage1_properties_typeProperties_url": {
 			"value": "https://dwchallenge1.dfs.core.windows.net/"
 		},
 		"AzureDataLakeStorage2_dwchallenge1_properties_typeProperties_url": {
 			"value": "https://dwchallenge1.dfs.core.windows.net/"
+		},
+		"covid_sa_properties_typeProperties_url": {
+			"value": "https://covid19i2fsoxg4a45l6.dfs.core.windows.net/"
 		},
 		"containerUri": {
 			"value": ""
