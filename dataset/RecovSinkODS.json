@@ -15,6 +15,47 @@
 			},
 			"compressionCodec": "snappy"
 		},
-		"schema": []
+		"schema": [
+			{
+				"name": "ID",
+				"type": "INT32"
+			},
+			{
+				"name": "Updated",
+				"type": "DATE"
+			},
+			{
+				"name": "Recovered",
+				"type": "INT32"
+			},
+			{
+				"name": "Recovered_Change",
+				"type": "INT32"
+			},
+			{
+				"name": "Latitude",
+				"type": "DECIMAL",
+				"precision": 10,
+				"scale": 5
+			},
+			{
+				"name": "Longitude",
+				"type": "DECIMAL",
+				"precision": 10,
+				"scale": 5
+			},
+			{
+				"name": "ISO2",
+				"type": "UTF8"
+			},
+			{
+				"name": "ISO3",
+				"type": "UTF8"
+			},
+			{
+				"name": "Country_Region",
+				"type": "UTF8"
+			}
+		]
 	}
 }
